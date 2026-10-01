@@ -6,53 +6,67 @@ use App\Models\Jadwal;
 use App\Models\Kelompok;
 use App\Models\Pengumpulan;
 use App\Models\Tugas;
+use Illuminate\Support\Facades\Auth;
 
 class BerandaController extends Controller
 {
-    public function index()
+    public function murid()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        if ($user->role === 'murid') {
-            $totalTugas = Tugas::whereHas('kelas', fn ($q) => $q->where('kelas.id', $user->kelas_id))->count();
-            $selesai    = Pengumpulan::where('siswa_id', $user->id)->count();
-            $rata       = Pengumpulan::where('siswa_id', $user->id)->whereNotNull('nilai')->avg('nilai');
-
-            $kartu = [
-                ['Tugas Pending', max(0, $totalTugas - $selesai), 'Tugas yang belum dikumpulkan'],
-                ['Tugas Selesai', $selesai, 'Tugas yang sudah dikumpulkan'],
-                ['Kelompok Belajar', $user->kelompok()->count(), 'Jumlah kelompok yang diikuti'],
-                ['Rating Anda', $rata ? round($rata) : '-', 'Rata-rata nilai tugas'],
-            ];
+        // ---------- 4 kartu ringkasan ----------
+        // semua tugas yang ditujukan ke kelas murid
+        $semuaTugas = $user->kelas->tugas->count();
+        // tugas yang sudah dikumpulkan murid
+        $tugasSelesai = Pengumpulan::where('siswa_id', $user->id)->count();
+        // sisanya berarti pending
+        $tugasPending = $semuaTugas - $tugasSelesai;
+        // jumlah kelompok yang diikuti
+        $kelompok = $user->kelompok->count();
+        // rata-rata nilai (avg mengabaikan nilai kosong)
+        $rataNilai = Pengumpulan::where('siswa_id', $user->id)->avg('nilai');
+        if ($rataNilai) {
+            $rating = round($rataNilai);
         } else {
-            $milikGuru = fn ($q) => $q->where('guru_id', $user->id);
-            $dinilai   = Pengumpulan::whereNotNull('nilai')->whereHas('tugas', $milikGuru);
-
-            $kartu = [
-                ['Tugas Dibuat', $user->tugas()->count(), 'Tugas yang Anda buat'],
-                ['Tugas Dinilai', (clone $dinilai)->count(), 'Pengumpulan yang sudah dinilai'],
-                ['Kelompok Belajar', Kelompok::whereHas('tugas', $milikGuru)->count(), 'Kelompok yang Anda buat'],
-                ['Rata-rata Nilai', ($r = (clone $dinilai)->avg('nilai')) ? round($r) : '-', 'Rata-rata nilai murid'],
-            ];
+            $rating = '-';
         }
 
-        // Jadwal mingguan (guru hanya melihat jadwal mapelnya)
-        $jadwal = Jadwal::with('mapel')
-            ->where('kelas_id', $user->kelas_id)
-            ->when($user->role === 'guru', fn ($q) => $q->where('mapel_id', $user->mapel_id))
-            ->orderBy('jam_mulai')
-            ->get();
+        // ---------- jadwal per hari (urut dari jam paling pagi) ----------
+        $senin = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Senin')->orderBy('jam_mulai')->get();
+        $selasa = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Selasa')->orderBy('jam_mulai')->get();
+        $rabu = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Rabu')->orderBy('jam_mulai')->get();
+        $kamis = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Kamis')->orderBy('jam_mulai')->get();
+        $jumat = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Jumat')->orderBy('jam_mulai')->get();
 
-        $slot = fn ($j) => substr($j->jam_mulai, 0, 5) . ' - ' . substr($j->jam_selesai, 0, 5);
+        return view('murid.beranda', compact('tugasPending', 'tugasSelesai', 'kelompok', 'rating',
+            'senin', 'selasa', 'rabu', 'kamis', 'jumat'));
+    }
 
-        $slots = $jadwal->map($slot)->unique()->values();
-        $grid  = [];
-        foreach ($jadwal as $j) {
-            $grid[$slot($j)][$j->hari] = $j->mapel->nama_mapel;
+    public function guru()
+    {
+        $user = Auth::user();
+
+        // ---------- 4 kartu ringkasan ----------
+        // id semua tugas yang dibuat guru ini
+        $idTugas = Tugas::where('guru_id', $user->id)->pluck('id');
+        $tugasDibuat = $idTugas->count();
+        $tugasDinilai = Pengumpulan::whereIn('tugas_id', $idTugas)->whereNotNull('nilai')->count();
+        $kelompokDibuat = Kelompok::whereIn('tugas_id', $idTugas)->count();
+        $rataNilai = Pengumpulan::whereIn('tugas_id', $idTugas)->whereNotNull('nilai')->avg('nilai');
+        if ($rataNilai) {
+            $rekap = round($rataNilai);
+        } else {
+            $rekap = '-';
         }
 
-        $hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        // ---------- jadwal kelas guru ----------
+        $senin = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Senin')->orderBy('jam_mulai')->get();
+        $selasa = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Selasa')->orderBy('jam_mulai')->get();
+        $rabu = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Rabu')->orderBy('jam_mulai')->get();
+        $kamis = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Kamis')->orderBy('jam_mulai')->get();
+        $jumat = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Jumat')->orderBy('jam_mulai')->get();
 
-        return view('beranda', compact('kartu', 'slots', 'grid', 'hari'));
+        return view('guru.beranda', compact('tugasDibuat', 'tugasDinilai', 'kelompokDibuat', 'rekap',
+            'senin', 'selasa', 'rabu', 'kamis', 'jumat'));
     }
 }

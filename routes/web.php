@@ -1,26 +1,35 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BerandaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\BerandaController;
 
-Route::middleware('guest')->group(function () {
-    Route::get('/', fn () => redirect()->route('login'));
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+Route::get('/', function () {
+    return redirect()->route('login');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+// hanya untuk yang BELUM login
+Route::middleware(['isGuest'])->group(function () {
+    Route::get('/login', function () {
+        return view('login');
+    })->name('login');
 
-    // Route khusus guru (nanti diisi: tugas, kelompok, penilaian, dll)
-    Route::middleware('role:guru')->group(function () {
-        //
+    Route::post('/login', [UserController::class, 'login'])->name('login.store');
+});
+
+// hanya untuk yang SUDAH login
+Route::middleware(['isLoggedIn'])->group(function () {
+    Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+
+    // khusus guru
+    Route::middleware(['isGuru'])->prefix('guru')->name('guru.')->group(function () {
+        Route::get('/beranda', [BerandaController::class, 'guru'])->name('beranda');
+        // route guru lainnya menyusul (tugas, kelompok, penilaian, dst)
     });
 
-    // Route khusus murid (nanti diisi: kumpul tugas, karya, laporan, dll)
-    Route::middleware('role:murid')->group(function () {
-        //
+    // khusus murid
+    Route::middleware(['isMurid'])->prefix('murid')->name('murid.')->group(function () {
+        Route::get('/beranda', [BerandaController::class, 'murid'])->name('beranda');
+        // route murid lainnya menyusul (tugas, karya, laporan, dst)
     });
 });

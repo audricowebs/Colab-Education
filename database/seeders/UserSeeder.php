@@ -2,77 +2,70 @@
 
 namespace Database\Seeders;
 
-use App\Models\Kelas;
-use App\Models\Mapel;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $kelas = Kelas::orderBy('id')->get();
-        $mapel = Mapel::orderBy('id')->get();
+        // ===== GURU (kelas_id dan mapel_id terisi, rayon kosong) =====
+        User::create([
+            'username' => 'mtk_xi1',
+            'email' => 'mtk_xi1@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'guru',
+            'nama_lengkap' => 'Budi Santoso',
+            'kelas_id' => 1,
+            'mapel_id' => 1,
+        ]);
+        User::create([
+            'username' => 'prod_xi1',
+            'email' => 'prod_xi1@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'guru',
+            'nama_lengkap' => 'Irfan Maulana',
+            'kelas_id' => 1,
+            'mapel_id' => 10,
+        ]);
 
-        // Nama guru per mapel, urutan: XI-1, XI-2, XI-3, XI-4, XI-5
-        $guru = [
-            'MTK'     => ['Budi Santoso', 'Sri Wahyuni', 'Agus Prasetyo', 'Dewi Lestari', 'Hendra Gunawan'],
-            'B.Indo'  => ['Rina Marlina', 'Siti Aminah', 'Yusuf Hidayat', 'Lilis Suryani', 'Dedi Kurniawan'],
-            'English' => ['Anita Putri', 'Rizky Ramadhan', 'Maya Kusuma', 'Fajar Nugroho', 'Citra Dewanti'],
-            'KIK'     => ['Wahyu Hidayat', 'Nur Aini', 'Bambang Sutrisno', 'Ratna Sari', 'Eko Saputra'],
-            'Sejarah' => ['Slamet Riyadi', 'Ani Rahmawati', 'Joko Susilo', 'Endang Purwati', 'Taufik Hidayat'],
-            'PAI'     => ['Ahmad Fauzi', 'Siti Khadijah', 'Abdul Rahman', 'Nurul Hidayah', 'Muhammad Iqbal'],
-            'PP'      => ['Hartono Wijaya', 'Yuni Astuti', 'Rudi Hermawan', 'Sari Wulandari', 'Andi Setiawan'],
-            'PJOK'    => ['Doni Saputra', 'Bayu Aditya', 'Rizal Firmansyah', 'Lukman Hakim', 'Teguh Prabowo'],
-            'Koku'    => ['Tri Handayani', 'Puji Lestari', 'Imam Syafii', 'Wati Handayani', 'Arif Budiman'],
-            'Prod'    => ['Irfan Maulana', 'Dian Pratiwi', 'Galih Pratama', 'Novi Andriani', 'Reza Pahlevi'],
-            'BK'      => ['Ratih Kumala', 'Heri Susanto', 'Lina Marlina', 'Adi Nugraha', 'Susi Susanti'],
-        ];
-
-        // Nama murid per kelas (5 murid tiap kelas)
-        $murid = [
-            ['Audrico Keena Setiadi', 'Bayu Mubiru', 'Dimas Hadi Syandana', 'Albertus Pandu Susanto', 'Farhan Maulana'],
-            ['Alya Nurhaliza', 'Raka Pratama', 'Nabila Putri', 'Kevin Anggara', 'Salsabila Azzahra'],
-            ['Rafi Ramadhan', 'Zahra Amelia', 'Naufal Hakim', 'Intan Permata', 'Yoga Saputra'],
-            ['Aulia Rahma', 'Bagas Wicaksono', 'Melati Kusuma', 'Ilham Fadillah', 'Tiara Anjani'],
-            ['Cahya Ningrum', 'Dafa Alfarizi', 'Elsa Safitri', 'Gilang Ramadhan', 'Hana Maharani'],
-        ];
-
-        $rayon = ['Cibedug 1', 'Cibedug 2', 'Cisarua 1', 'Ciawi 1', 'Taman Sari 1'];
-
-        // Guru: 1 guru untuk setiap kombinasi mapel + kelas
-        foreach ($kelas as $ki => $k) {
-            foreach ($mapel as $m) {
-                $kode = strtolower(str_replace('.', '', $m->nama_mapel)) . '_xi' . $k->id;
-
-                User::create([
-                    'username'     => $kode,
-                    'email'        => $kode . '@gmail.com',
-                    'password'     => 'password',
-                    'role'         => 'guru',
-                    'nama_lengkap' => $guru[$m->nama_mapel][$ki],
-                    'kelas_id'     => $k->id,
-                    'mapel_id'     => $m->id,
-                ]);
-            }
-        }
-
-        // Murid: 5 murid per kelas
-        foreach ($kelas as $ki => $k) {
-            foreach ($murid[$ki] as $n => $nama) {
-                $kode = 'murid' . ($n + 1) . '_xi' . $k->id;
-
-                User::create([
-                    'username'     => $kode,
-                    'email'        => $kode . '@gmail.com',
-                    'password'     => 'password',
-                    'role'         => 'murid',
-                    'nama_lengkap' => $nama,
-                    'rayon'        => $rayon[$n],
-                    'kelas_id'     => $k->id,
-                    'mapel_id'     => null,
-                ]);
-            }
-        }
+        // ===== MURID (kelas_id dan rayon terisi, mapel_id kosong) =====
+        User::create([
+            'username' => 'murid1_xi1',
+            'email' => 'murid1_xi1@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'murid',
+            'nama_lengkap' => 'Audrico Keena Setiadi',
+            'rayon' => 'Cibedug 1',
+            'kelas_id' => 1,
+        ]);
+        User::create([
+            'username' => 'murid2_xi1',
+            'email' => 'murid2_xi1@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'murid',
+            'nama_lengkap' => 'Bayu Mubiru',
+            'rayon' => 'Cibedug 2',
+            'kelas_id' => 1,
+        ]);
+        User::create([
+            'username' => 'murid3_xi1',
+            'email' => 'murid3_xi1@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'murid',
+            'nama_lengkap' => 'Dimas Hadi Syandana',
+            'rayon' => 'Cisarua 1',
+            'kelas_id' => 1,
+        ]);
+        User::create([
+            'username' => 'murid4_xi1',
+            'email' => 'murid4_xi1@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'murid',
+            'nama_lengkap' => 'Albertus Pandu Susanto',
+            'rayon' => 'Ciawi 1',
+            'kelas_id' => 1,
+        ]);
     }
 }

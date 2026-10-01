@@ -9,8 +9,10 @@ class KelasSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (['PPLG XI-1', 'PPLG XI-2', 'PPLG XI-3', 'PPLG XI-4', 'PPLG XI-5'] as $nama) {
-            Kelas::create(['nama_kelas' => $nama]);
-        }
+        Kelas::create(['nama_kelas' => 'PPLG XI-1']);
+        Kelas::create(['nama_kelas' => 'PPLG XI-2']);
+        Kelas::create(['nama_kelas' => 'PPLG XI-3']);
+        Kelas::create(['nama_kelas' => 'PPLG XI-4']);
+        Kelas::create(['nama_kelas' => 'PPLG XI-5']);
     }
 }

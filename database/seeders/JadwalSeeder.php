@@ -3,33 +3,32 @@
 namespace Database\Seeders;
 
 use App\Models\Jadwal;
-use App\Models\Kelas;
-use App\Models\Mapel;
 use Illuminate\Database\Seeder;
 
 class JadwalSeeder extends Seeder
 {
     public function run(): void
     {
-        $hari  = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-        $sesi  = [['07:00', '08:30'], ['08:30', '10:00'], ['10:15', '11:45']];
-        $mapel = Mapel::pluck('id')->values();
-
-        foreach (Kelas::all() as $k) {
-            $i = $k->id; // supaya urutan mapel tiap kelas berbeda
-
-            foreach ($hari as $h) {
-                foreach ($sesi as [$mulai, $selesai]) {
-                    Jadwal::create([
-                        'kelas_id'    => $k->id,
-                        'mapel_id'    => $mapel[$i % $mapel->count()],
-                        'hari'        => $h,
-                        'jam_mulai'   => $mulai,
-                        'jam_selesai' => $selesai,
-                    ]);
-                    $i++;
-                }
-            }
-        }
+        // kelas_id 1 = PPLG XI-1. mapel_id lihat MapelSeeder
+        // SENIN
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 1, 'hari' => 'Senin', 'jam_mulai' => '07:00', 'jam_selesai' => '08:30']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 3, 'hari' => 'Senin', 'jam_mulai' => '08:30', 'jam_selesai' => '10:00']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 2, 'hari' => 'Senin', 'jam_mulai' => '10:15', 'jam_selesai' => '11:45']);
+        // SELASA
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 10, 'hari' => 'Selasa', 'jam_mulai' => '07:00', 'jam_selesai' => '08:30']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 10, 'hari' => 'Selasa', 'jam_mulai' => '08:30', 'jam_selesai' => '10:00']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 4, 'hari' => 'Selasa', 'jam_mulai' => '10:15', 'jam_selesai' => '11:45']);
+        // RABU
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 5, 'hari' => 'Rabu', 'jam_mulai' => '07:00', 'jam_selesai' => '08:30']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 6, 'hari' => 'Rabu', 'jam_mulai' => '08:30', 'jam_selesai' => '10:00']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 7, 'hari' => 'Rabu', 'jam_mulai' => '10:15', 'jam_selesai' => '11:45']);
+        // KAMIS
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 8, 'hari' => 'Kamis', 'jam_mulai' => '07:00', 'jam_selesai' => '08:30']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 9, 'hari' => 'Kamis', 'jam_mulai' => '08:30', 'jam_selesai' => '10:00']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 11, 'hari' => 'Kamis', 'jam_mulai' => '10:15', 'jam_selesai' => '11:45']);
+        // JUMAT
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 1, 'hari' => 'Jumat', 'jam_mulai' => '07:00', 'jam_selesai' => '08:30']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 2, 'hari' => 'Jumat', 'jam_mulai' => '08:30', 'jam_selesai' => '10:00']);
+        Jadwal::create(['kelas_id' => 1, 'mapel_id' => 3, 'hari' => 'Jumat', 'jam_mulai' => '10:15', 'jam_selesai' => '11:45']);
     }
 }

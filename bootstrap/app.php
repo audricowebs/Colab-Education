@@ -12,11 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+    //
     $middleware->alias([
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'isLoggedIn' => App\Http\Middleware\IsLoggedIn::class,
+        'isGuest' => App\Http\Middleware\IsGuest::class,
+        'isGuru' => App\Http\Middleware\IsGuru::class,
+        'isMurid' => App\Http\Middleware\IsMurid::class,
     ]);
-    $middleware->redirectGuestsTo('/login');
-    $middleware->redirectUsersTo('/beranda');
 })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

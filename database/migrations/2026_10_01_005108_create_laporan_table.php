@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kelompok', function (Blueprint $table) {
+        Schema::create('laporan', function (Blueprint $table) {
     $table->id();
-    $table->foreignId('tugas_id')->constrained('tugas');
-    $table->foreignId('kelas_id')->constrained('kelas');
-    $table->foreignId('mapel_id')->constrained('mapel');
-    $table->unsignedInteger('nomor');
+    $table->foreignId('pelapor_id')->constrained('users')->onDelete('cascade');
+    $table->foreignId('guru_id')->constrained('users')->onDelete('cascade');
+    $table->string('jenis_masalah');
     $table->text('deskripsi');
+    $table->string('telp_pelapor');
+    $table->string('telp_pelaku')->nullable();
+    $table->string('bukti_png')->nullable();
     $table->timestamps();
 });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kelompok');
+        Schema::dropIfExists('laporan');
     }
 };

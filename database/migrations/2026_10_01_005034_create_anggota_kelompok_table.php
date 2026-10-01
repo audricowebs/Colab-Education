@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('anggota_kelompok', function (Blueprint $table) {
-    $table->foreignId('kelompok_id')->constrained('kelompok')->cascadeOnDelete();
-    $table->foreignId('user_id')->constrained('users');
+    $table->foreignId('kelompok_id')->constrained('kelompok')->onDelete('cascade');
+    $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
     $table->primary(['kelompok_id', 'user_id']);
 });
     }
