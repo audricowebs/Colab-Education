@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Jadwal;
 use App\Models\Kelompok;
 use App\Models\Pengumpulan;
+use App\Models\Laporan;
 use App\Models\Tugas;
 use Illuminate\Support\Facades\Auth;
+
 
 class BerandaController extends Controller
 {
@@ -52,12 +54,7 @@ class BerandaController extends Controller
         $tugasDibuat = $idTugas->count();
         $tugasDinilai = Pengumpulan::whereIn('tugas_id', $idTugas)->whereNotNull('nilai')->count();
         $kelompokDibuat = Kelompok::whereIn('tugas_id', $idTugas)->count();
-        $rataNilai = Pengumpulan::whereIn('tugas_id', $idTugas)->whereNotNull('nilai')->avg('nilai');
-        if ($rataNilai) {
-            $rekap = round($rataNilai);
-        } else {
-            $rekap = '-';
-        }
+        $laporanMasuk = Laporan::where('guru_id', $user->id)->count();
 
         // ---------- jadwal kelas guru ----------
         $senin = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Senin')->orderBy('jam_mulai')->get();
@@ -66,7 +63,7 @@ class BerandaController extends Controller
         $kamis = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Kamis')->orderBy('jam_mulai')->get();
         $jumat = Jadwal::with('mapel')->where('kelas_id', $user->kelas_id)->where('hari', 'Jumat')->orderBy('jam_mulai')->get();
 
-        return view('guru.beranda', compact('tugasDibuat', 'tugasDinilai', 'kelompokDibuat', 'rekap',
+        return view('guru.beranda', compact('tugasDibuat', 'tugasDinilai', 'kelompokDibuat', 'laporanMasuk',
             'senin', 'selasa', 'rabu', 'kamis', 'jumat'));
     }
 }

@@ -19,4 +19,9 @@ class Jadwal extends Model
     public function mapel(): BelongsTo {
         return $this->belongsTo(Mapel::class);
     }
+        // gabungan jam mulai dan jam selesai, contoh: 07:00 - 08:30
+    public function getJamAttribute()
+    {
+        return substr($this->jam_mulai, 0, 5) . ' - ' . substr($this->jam_selesai, 0, 5);
+    }
 }

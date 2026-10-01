@@ -64,13 +64,14 @@
                     <div class="ket">kelompok yang anda buat</div>
                 </div>
                 <div class="kartu">
-                    <small>Rekap Nilai</small>
-                    <div class="angka">{{ $rekap }}</div>
-                    <div class="ket">Rata-rata nilai murid</div>
+                    <small>Laporan Masuk</small>
+                    <div class="angka">{{ $laporanMasuk }}</div>
+                    <div class="ket">Laporan murid yang masuk</div>
                 </div>
             </div>
 
             <!-- jadwal: tiap baris = sesi ke-1, ke-2, ke-3 ; [0] [1] [2] = urutan jam -->
+                            <!-- jadwal: tiap baris = sesi ke-1, ke-2, ke-3 ; [0] [1] [2] = urutan jam -->
             <table class="jadwal">
                 <tr>
                     <th>Senin</th>
@@ -82,27 +83,27 @@
                     <th>Minggu</th>
                 </tr>
                 <tr>
-                    <td>{{ $senin[0]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $selasa[0]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $rabu[0]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $kamis[0]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $jumat[0]->mapel->nama_mapel ?? '' }}</td>
+                    <td>{{ $senin[0]->mapel->nama_mapel ?? '' }}<br><small>{{ $senin[0]->jam ?? '' }}</small></td>
+                    <td>{{ $selasa[0]->mapel->nama_mapel ?? '' }}<br><small>{{ $selasa[0]->jam ?? '' }}</small></td>
+                    <td>{{ $rabu[0]->mapel->nama_mapel ?? '' }}<br><small>{{ $rabu[0]->jam ?? '' }}</small></td>
+                    <td>{{ $kamis[0]->mapel->nama_mapel ?? '' }}<br><small>{{ $kamis[0]->jam ?? '' }}</small></td>
+                    <td>{{ $jumat[0]->mapel->nama_mapel ?? '' }}<br><small>{{ $jumat[0]->jam ?? '' }}</small></td>
                     <td rowspan="3" class="libur"></td>
                     <td rowspan="3" class="libur"></td>
                 </tr>
                 <tr>
-                    <td>{{ $senin[1]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $selasa[1]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $rabu[1]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $kamis[1]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $jumat[1]->mapel->nama_mapel ?? '' }}</td>
+                    <td>{{ $senin[1]->mapel->nama_mapel ?? '' }}<br><small>{{ $senin[1]->jam ?? '' }}</small></td>
+                    <td>{{ $selasa[1]->mapel->nama_mapel ?? '' }}<br><small>{{ $selasa[1]->jam ?? '' }}</small></td>
+                    <td>{{ $rabu[1]->mapel->nama_mapel ?? '' }}<br><small>{{ $rabu[1]->jam ?? '' }}</small></td>
+                    <td>{{ $kamis[1]->mapel->nama_mapel ?? '' }}<br><small>{{ $kamis[1]->jam ?? '' }}</small></td>
+                    <td>{{ $jumat[1]->mapel->nama_mapel ?? '' }}<br><small>{{ $jumat[1]->jam ?? '' }}</small></td>
                 </tr>
                 <tr>
-                    <td>{{ $senin[2]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $selasa[2]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $rabu[2]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $kamis[2]->mapel->nama_mapel ?? '' }}</td>
-                    <td>{{ $jumat[2]->mapel->nama_mapel ?? '' }}</td>
+                    <td>{{ $senin[2]->mapel->nama_mapel ?? '' }}<br><small>{{ $senin[2]->jam ?? '' }}</small></td>
+                    <td>{{ $selasa[2]->mapel->nama_mapel ?? '' }}<br><small>{{ $selasa[2]->jam ?? '' }}</small></td>
+                    <td>{{ $rabu[2]->mapel->nama_mapel ?? '' }}<br><small>{{ $rabu[2]->jam ?? '' }}</small></td>
+                    <td>{{ $kamis[2]->mapel->nama_mapel ?? '' }}<br><small>{{ $kamis[2]->jam ?? '' }}</small></td>
+                    <td>{{ $jumat[2]->mapel->nama_mapel ?? '' }}<br><small>{{ $jumat[2]->jam ?? '' }}</small></td>
                 </tr>
             </table>
         </div>
